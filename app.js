@@ -577,19 +577,21 @@ async function signInToFirebase() {
   if (!(await ensureFirebase())) return;
   const { auth } = firebaseState.modules;
   const provider = new auth.GoogleAuthProvider();
+  setSyncStatus("Googleログインを開始しています...", "");
   try {
-    if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
-      setSyncStatus("Googleログイン画面へ移動します...", "");
-      await auth.signInWithRedirect(firebaseState.auth, provider);
-      return;
-    }
     const result = await auth.signInWithPopup(firebaseState.auth, provider);
     firebaseState.user = result.user;
     setSyncStatus("ログインしました。同期しています...", "success");
     await syncWithFirebase();
   } catch (error) {
-    if (error.code === "auth/popup-blocked" || error.code === "auth/popup-closed-by-user") {
-      setSyncStatus("Googleログイン画面へ移動します...", "");
+    const shouldUseRedirect = [
+      "auth/popup-blocked",
+      "auth/popup-closed-by-user",
+      "auth/cancelled-popup-request",
+      "auth/operation-not-supported-in-this-environment",
+    ].includes(error.code);
+    if (shouldUseRedirect) {
+      setSyncStatus("別画面でGoogleログインを開きます...", "");
       await auth.signInWithRedirect(firebaseState.auth, provider);
       return;
     }
