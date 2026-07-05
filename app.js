@@ -621,7 +621,7 @@ let pendingSyncTimer = null;
 function queueFirebaseSync() {
   if (!firebaseState.user || !firebaseState.db || firebaseState.syncing) return;
   clearTimeout(pendingSyncTimer);
-  pendingSyncTimer = setTimeout(() => syncWithFirebase(), 800);
+  pendingSyncTimer = setTimeout(() => syncWithFirebase(), 3000);
 }
 
 async function syncWithFirebase() {
@@ -637,30 +637,20 @@ async function syncWithFirebase() {
     const collectionRef = firestore.collection(firebaseState.db, "users", firebaseState.user.uid, "cards");
     const snapshot = await firestore.getDocs(collectionRef);
     const remoteCards = snapshot.docs.map((doc) => normalizeRemoteCard(doc.id, doc.data()));
+    const remoteById = new Map(remoteCards.map((card) => [card.id, card]));
     const merged = mergeCardSets(cards, remoteCards);
     cards = merged;
     localStorage.setItem(storageKey, JSON.stringify(cards));
 
-    await Promise.all(
-      cards.map((card) =>
-        firestore.setDoc(firestore.doc(collectionRef, card.id), {
-          thai: card.thai || "",
-          reading: card.reading || "",
-          meaning: card.meaning || "",
-          category: card.category || "",
-          memo: card.memo || "",
-          image: card.image || "",
-          reviewCount: Number(card.reviewCount || 0),
-          learned: Boolean(card.learned),
-          learnedAt: card.learnedAt || "",
-          createdAt: card.createdAt || new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        }),
-      ),
-    );
+    const changedCards = cards.filter((card) => {
+      const remoteCard = remoteById.get(card.id);
+      return !remoteCard || cardSyncSignature(card) !== cardSyncSignature(remoteCard);
+    });
+
+    await Promise.all(changedCards.map((card) => firestore.setDoc(firestore.doc(collectionRef, card.id), cardToFirestore(card))));
     activeIndex = Math.min(activeIndex, Math.max(cards.length - 1, 0));
     render();
-    setSyncStatus(`${cards.length}件を同期しました。`, "success");
+    setSyncStatus(`${cards.length}件を同期しました。書き込み ${changedCards.length}件。`, "success");
   } catch (error) {
     setSyncStatus(`同期できませんでした: ${formatFirebaseError(error)}`, "error");
   } finally {
@@ -668,6 +658,36 @@ async function syncWithFirebase() {
   }
 }
 
+function cardToFirestore(card) {
+  return {
+    thai: card.thai || "",
+    reading: card.reading || "",
+    meaning: card.meaning || "",
+    category: card.category || "",
+    memo: card.memo || "",
+    image: card.image || "",
+    reviewCount: Number(card.reviewCount || 0),
+    learned: Boolean(card.learned),
+    learnedAt: card.learnedAt || "",
+    createdAt: card.createdAt || new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+}
+
+function cardSyncSignature(card) {
+  return JSON.stringify({
+    thai: card.thai || "",
+    reading: card.reading || "",
+    meaning: card.meaning || "",
+    category: card.category || "",
+    memo: card.memo || "",
+    image: card.image || "",
+    reviewCount: Number(card.reviewCount || 0),
+    learned: Boolean(card.learned),
+    learnedAt: card.learnedAt || "",
+    createdAt: card.createdAt || "",
+  });
+}
 function normalizeRemoteCard(id, data) {
   return {
     id,
@@ -710,6 +730,9 @@ function formatFirebaseError(error) {
   }
   if (error?.code === "permission-denied" || error?.code === "firestore/permission-denied") {
     return "Firestoreルールでログインユーザーの読み書きを許可してください。";
+  }
+  if (error?.code === "resource-exhausted" || error?.message?.toLowerCase().includes("quota")) {
+    return "Firebaseの無料枠またはクォータ上限に達しています。時間をおいてから再試行してください。";
   }
   return error?.message || "原因不明のエラー";
 }
