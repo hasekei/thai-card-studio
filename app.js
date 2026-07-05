@@ -202,6 +202,12 @@ elements.signOutButton.addEventListener("click", signOutFromFirebase);
 elements.syncNowButton.addEventListener("click", syncWithFirebase);
 
 if ("serviceWorker" in navigator) {
+  let refreshingForUpdate = false;
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    if (refreshingForUpdate) return;
+    refreshingForUpdate = true;
+    window.location.reload();
+  });
   window.addEventListener("load", async () => {
     try {
       const registration = await navigator.serviceWorker.register("sw.js");
