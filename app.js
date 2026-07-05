@@ -21,6 +21,7 @@ let cards = loadCards();
 let activeIndex = 0;
 let answerVisible = false;
 let lastSyncedAuthUid = "";
+let redirectResultChecked = false;
 let firebaseState = {
   app: null,
   auth: null,
@@ -537,7 +538,23 @@ async function ensureFirebase() {
       setTimeout(() => syncWithFirebase(), 300);
     }
   });
+  checkFirebaseRedirectResult();
   return true;
+}
+
+async function checkFirebaseRedirectResult() {
+  if (redirectResultChecked) return;
+  redirectResultChecked = true;
+  try {
+    const result = await firebaseState.modules.auth.getRedirectResult(firebaseState.auth);
+    if (result?.user) {
+      firebaseState.user = result.user;
+      setSyncStatus("ログインしました。同期しています...", "success");
+      await syncWithFirebase();
+    }
+  } catch (error) {
+    setSyncStatus(`ログインできませんでした: ${formatFirebaseError(error)}`, "error");
+  }
 }
 
 async function signInToFirebase() {
@@ -546,6 +563,7 @@ async function signInToFirebase() {
   const provider = new auth.GoogleAuthProvider();
   try {
     if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+      setSyncStatus("Googleログイン画面へ移動します...", "");
       await auth.signInWithRedirect(firebaseState.auth, provider);
       return;
     }
@@ -555,6 +573,7 @@ async function signInToFirebase() {
     await syncWithFirebase();
   } catch (error) {
     if (error.code === "auth/popup-blocked" || error.code === "auth/popup-closed-by-user") {
+      setSyncStatus("Googleログイン画面へ移動します...", "");
       await auth.signInWithRedirect(firebaseState.auth, provider);
       return;
     }
@@ -673,6 +692,7 @@ function setSyncStatus(message, type) {
 
 if (firebaseState.config) {
   setSyncStatus("Firebase設定済み。Googleログインできます。", "success");
+  ensureFirebase();
 } else {
   setSyncStatus("Firebase設定を貼り付けてください。", "");
 }
