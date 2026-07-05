@@ -282,6 +282,81 @@ h2 {
   font-size: 1.2rem;
 }
 
+
+.letter-guide {
+  display: grid;
+  gap: 16px;
+}
+
+.letter-panel {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel-strong);
+  padding: 14px;
+  box-shadow: 0 10px 24px rgba(31, 35, 40, 0.06);
+}
+
+.letter-panel-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.letter-panel-head h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.letter-panel-head span {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.letter-grid {
+  display: grid;
+  gap: 8px;
+}
+
+.consonant-grid {
+  grid-template-columns: repeat(auto-fit, minmax(82px, 1fr));
+}
+
+.vowel-grid {
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+}
+
+.letter-tile {
+  min-height: 92px;
+  display: grid;
+  align-content: center;
+  gap: 4px;
+  border: 1px solid rgba(222, 210, 191, 0.9);
+  border-radius: 8px;
+  background: #fffaf2;
+  padding: 9px 8px;
+  text-align: center;
+}
+
+.letter-tile strong {
+  font-family: "Noto Sans Thai", "Tahoma", sans-serif;
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.letter-tile span {
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.letter-tile small {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
 .form-card,
 .csv-note,
 .card-item {
@@ -477,6 +552,16 @@ textarea {
 }
 
 @media (max-width: 520px) {
+  .tabs {
+    overflow-x: auto;
+    justify-content: flex-start;
+  }
+
+  .tab {
+    flex: 0 0 auto;
+    min-width: 68px;
+  }
+
   h1 {
     font-size: 1.7rem;
   }
@@ -567,6 +652,7 @@ textarea {
 }
 
 @media (max-width: 520px) {
+
   .sync-actions {
     grid-template-columns: 1fr;
   }

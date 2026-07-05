@@ -25,6 +25,7 @@
         <button class="tab is-active" data-view="studyView" type="button">復習</button>
         <button class="tab" data-view="cardsView" type="button">カード</button>
         <button class="tab" data-view="importView" type="button">CSV</button>
+        <button class="tab" data-view="lettersView" type="button">文字表</button>
         <button class="tab" data-view="syncView" type="button">同期</button>
       </nav>
 
@@ -124,6 +125,103 @@
         <p id="importMessage" class="message" aria-live="polite"></p>
       </section>
 
+
+      <section id="lettersView" class="view" aria-labelledby="lettersTitle">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Thai Letters</p>
+            <h2 id="lettersTitle">子音表・母音表</h2>
+          </div>
+        </div>
+
+        <div class="letter-guide">
+          <section class="letter-panel" aria-labelledby="consonantsTitle">
+            <div class="letter-panel-head">
+              <h3 id="consonantsTitle">子音 44文字</h3>
+              <span>声調クラスつき</span>
+            </div>
+            <div class="letter-grid consonant-grid">
+              <div class="letter-tile"><strong>ก</strong><span>k / g</span><small>中子音</small></div>
+              <div class="letter-tile"><strong>ข</strong><span>kh</span><small>高子音</small></div>
+              <div class="letter-tile"><strong>ฃ</strong><span>kh</span><small>高子音・旧字</small></div>
+              <div class="letter-tile"><strong>ค</strong><span>kh</span><small>低子音</small></div>
+              <div class="letter-tile"><strong>ฅ</strong><span>kh</span><small>低子音・旧字</small></div>
+              <div class="letter-tile"><strong>ฆ</strong><span>kh</span><small>低子音</small></div>
+              <div class="letter-tile"><strong>ง</strong><span>ng</span><small>低子音</small></div>
+              <div class="letter-tile"><strong>จ</strong><span>ch / j</span><small>中子音</small></div>
+              <div class="letter-tile"><strong>ฉ</strong><span>ch</span><small>高子音</small></div>
+              <div class="letter-tile"><strong>ช</strong><span>ch</span><small>低子音</small></div>
+              <div class="letter-tile"><strong>ซ</strong><span>s</span><small>低子音</small></div>
+              <div class="letter-tile"><strong>ฌ</strong><span>ch</span><small>低子音</small></div>
+              <div class="letter-tile"><strong>ญ</strong><span>y</span><small>低子音</small></div>
+              <div class="letter-tile"><strong>ฎ</strong><span>d</span><small>中子音</small></div>
+              <div class="letter-tile"><strong>ฏ</strong><span>t</span><small>中子音</small></div>
+              <div class="letter-tile"><strong>ฐ</strong><span>th</span><small>高子音</small></div>
+              <div class="letter-tile"><strong>ฑ</strong><span>th</span><small>低子音</small></div>
+              <div class="letter-tile"><strong>ฒ</strong><span>th</span><small>低子音</small></div>
+              <div class="letter-tile"><strong>ณ</strong><span>n</span><small>低子音</small></div>
+              <div class="letter-tile"><strong>ด</strong><span>d</span><small>中子音</small></div>
+              <div class="letter-tile"><strong>ต</strong><span>t</span><small>中子音</small></div>
+              <div class="letter-tile"><strong>ถ</strong><span>th</span><small>高子音</small></div>
+              <div class="letter-tile"><strong>ท</strong><span>th</span><small>低子音</small></div>
+              <div class="letter-tile"><strong>ธ</strong><span>th</span><small>低子音</small></div>
+              <div class="letter-tile"><strong>น</strong><span>n</span><small>低子音</small></div>
+              <div class="letter-tile"><strong>บ</strong><span>b</span><small>中子音</small></div>
+              <div class="letter-tile"><strong>ป</strong><span>p</span><small>中子音</small></div>
+              <div class="letter-tile"><strong>ผ</strong><span>ph</span><small>高子音</small></div>
+              <div class="letter-tile"><strong>ฝ</strong><span>f</span><small>高子音</small></div>
+              <div class="letter-tile"><strong>พ</strong><span>ph</span><small>低子音</small></div>
+              <div class="letter-tile"><strong>ฟ</strong><span>f</span><small>低子音</small></div>
+              <div class="letter-tile"><strong>ภ</strong><span>ph</span><small>低子音</small></div>
+              <div class="letter-tile"><strong>ม</strong><span>m</span><small>低子音</small></div>
+              <div class="letter-tile"><strong>ย</strong><span>y</span><small>低子音</small></div>
+              <div class="letter-tile"><strong>ร</strong><span>r</span><small>低子音</small></div>
+              <div class="letter-tile"><strong>ล</strong><span>l</span><small>低子音</small></div>
+              <div class="letter-tile"><strong>ว</strong><span>w</span><small>低子音</small></div>
+              <div class="letter-tile"><strong>ศ</strong><span>s</span><small>高子音</small></div>
+              <div class="letter-tile"><strong>ษ</strong><span>s</span><small>高子音</small></div>
+              <div class="letter-tile"><strong>ส</strong><span>s</span><small>高子音</small></div>
+              <div class="letter-tile"><strong>ห</strong><span>h</span><small>高子音</small></div>
+              <div class="letter-tile"><strong>ฬ</strong><span>l</span><small>低子音</small></div>
+              <div class="letter-tile"><strong>อ</strong><span>o</span><small>中子音</small></div>
+              <div class="letter-tile"><strong>ฮ</strong><span>h</span><small>低子音</small></div>
+            </div>
+          </section>
+
+          <section class="letter-panel" aria-labelledby="vowelsTitle">
+            <div class="letter-panel-head">
+              <h3 id="vowelsTitle">母音 よく使う形</h3>
+              <span>「-」は子音の位置</span>
+            </div>
+            <div class="letter-grid vowel-grid">
+              <div class="letter-tile"><strong>-ะ</strong><span>a</span><small>短母音</small></div>
+              <div class="letter-tile"><strong>-า</strong><span>aa</span><small>長母音</small></div>
+              <div class="letter-tile"><strong>-ิ</strong><span>i</span><small>短母音</small></div>
+              <div class="letter-tile"><strong>-ี</strong><span>ii</span><small>長母音</small></div>
+              <div class="letter-tile"><strong>-ึ</strong><span>ue</span><small>短母音</small></div>
+              <div class="letter-tile"><strong>-ื</strong><span>uee</span><small>長母音</small></div>
+              <div class="letter-tile"><strong>-ุ</strong><span>u</span><small>短母音</small></div>
+              <div class="letter-tile"><strong>-ู</strong><span>uu</span><small>長母音</small></div>
+              <div class="letter-tile"><strong>เ-ะ</strong><span>e</span><small>短母音</small></div>
+              <div class="letter-tile"><strong>เ-</strong><span>ee</span><small>長母音</small></div>
+              <div class="letter-tile"><strong>แ-ะ</strong><span>ae</span><small>短母音</small></div>
+              <div class="letter-tile"><strong>แ-</strong><span>aee</span><small>長母音</small></div>
+              <div class="letter-tile"><strong>โ-ะ</strong><span>o</span><small>短母音</small></div>
+              <div class="letter-tile"><strong>โ-</strong><span>oo</span><small>長母音</small></div>
+              <div class="letter-tile"><strong>เ-าะ</strong><span>aw</span><small>短母音</small></div>
+              <div class="letter-tile"><strong>-อ</strong><span>aaw</span><small>長母音</small></div>
+              <div class="letter-tile"><strong>เ-า</strong><span>ao</span><small>二重母音</small></div>
+              <div class="letter-tile"><strong>ใ-</strong><span>ai</span><small>mai muan</small></div>
+              <div class="letter-tile"><strong>ไ-</strong><span>ai</span><small>mai malai</small></div>
+              <div class="letter-tile"><strong>-ำ</strong><span>am</span><small>母音記号</small></div>
+              <div class="letter-tile"><strong>เ-ีย</strong><span>ia</span><small>複合母音</small></div>
+              <div class="letter-tile"><strong>เ-ือ</strong><span>uea</span><small>複合母音</small></div>
+              <div class="letter-tile"><strong>-ัว</strong><span>ua</span><small>複合母音</small></div>
+              <div class="letter-tile"><strong>-ั</strong><span>a</span><small>末子音あり</small></div>
+            </div>
+          </section>
+        </div>
+      </section>
       <section id="syncView" class="view" aria-labelledby="syncTitle">
         <div class="section-head">
           <div>
@@ -149,7 +247,7 @@
       </section>
     </main>
 
-    <script src="app.js?v=13" defer></script>
+    <script src="app.js?v=14" defer></script>
   </body>
 </html>
 

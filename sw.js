@@ -1,5 +1,5 @@
-const cacheName = "thai-card-studio-v13";
-const assets = ["./", "./index.html", "./styles.css", "./app.js?v=13", "./manifest.webmanifest", "./icon.svg"];
+const cacheName = "thai-card-studio-v14";
+const assets = ["./", "./index.html", "./styles.css", "./app.js?v=14", "./manifest.webmanifest", "./icon.svg"];
 
 self.addEventListener("install", (event) => {
   self.skipWaiting();
