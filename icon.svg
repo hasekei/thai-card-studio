@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#f8b84e"/>
+  <circle cx="258" cy="256" r="154" fill="#fffaf2"/>
+  <path fill="#e07b39" d="M181 294c0-76 49-139 111-139 48 0 82 36 82 88 0 75-56 134-119 134-43 0-74-32-74-83z"/>
+  <path fill="#467f5b" d="M290 152c23-36 63-51 105-41-8 39-38 67-84 70z"/>
+  <text x="256" y="308" text-anchor="middle" font-family="Tahoma, sans-serif" font-size="102" font-weight="800" fill="#1f2328">ก</text>
+</svg>

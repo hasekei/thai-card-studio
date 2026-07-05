@@ -1,0 +1,126 @@
+﻿<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#f8b84e" />
+    <title>Thai Card Studio</title>
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Thai Card Studio</p>
+          <h1>タイ語カード</h1>
+        </div>
+        <div class="stats" aria-live="polite">
+          <span id="cardCount">0</span>
+          <small>cards</small>
+        </div>
+      </header>
+
+      <nav class="tabs" aria-label="メイン表示">
+        <button class="tab is-active" data-view="studyView" type="button">復習</button>
+        <button class="tab" data-view="cardsView" type="button">カード</button>
+        <button class="tab" data-view="importView" type="button">CSV</button>
+      </nav>
+
+      <section id="studyView" class="view is-active" aria-labelledby="studyTitle">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Review</p>
+            <h2 id="studyTitle">画像で思い出す</h2>
+          </div>
+          <button id="shuffleButton" class="icon-button" type="button" title="次の単語" aria-label="次の単語">→</button>
+        </div>
+
+        <article id="studyCard" class="study-card" tabindex="0">
+          <div class="empty-state">
+            <strong>CSVから単語を入れて始めよう</strong>
+            <span>画像は後からカードごとに追加できます。</span>
+          </div>
+        </article>
+
+        <div class="answer-actions">
+          <button id="revealButton" class="primary-button" type="button">答えを見る</button>
+          <button id="nextButton" class="secondary-button" type="button">次の単語</button>
+          <button id="knownButton" class="secondary-button" type="button">覚えた</button>
+        </div>
+      </section>
+
+      <section id="cardsView" class="view" aria-labelledby="cardsTitle">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Library</p>
+            <h2 id="cardsTitle">カード一覧</h2>
+          </div>
+        </div>
+
+        <form id="cardForm" class="form-card">
+          <label>
+            <span>画像</span>
+            <input id="imageInput" type="file" accept="image/*" />
+          </label>
+          <label>
+            <span>タイ語</span>
+            <input id="thaiInput" type="text" placeholder="มะม่วง" required />
+          </label>
+          <label>
+            <span>読み方</span>
+            <input id="readingInput" type="text" placeholder="マムアン" />
+          </label>
+          <label>
+            <span>日本語訳</span>
+            <input id="meaningInput" type="text" placeholder="マンゴー" required />
+          </label>
+          <label>
+            <span>カテゴリ</span>
+            <input id="categoryInput" type="text" placeholder="食べ物" />
+          </label>
+          <label>
+            <span>メモ</span>
+            <textarea id="memoInput" rows="3" placeholder="覚え方や例文"></textarea>
+          </label>
+          <button class="primary-button" type="submit">カードを追加</button>
+        </form>
+
+        <div id="cardList" class="card-list"></div>
+      </section>
+
+      <section id="importView" class="view" aria-labelledby="csvTitle">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Bulk Edit</p>
+            <h2 id="csvTitle">CSV一括登録</h2>
+          </div>
+        </div>
+
+        <div class="tools-grid">
+          <label class="file-drop">
+            <span>CSVを読み込む</span>
+            <input id="csvInput" type="file" accept=".csv,text/csv" />
+          </label>
+          <button id="sampleButton" class="secondary-button" type="button">サンプルCSV</button>
+          <button id="exportButton" class="secondary-button" type="button">CSVを書き出す</button>
+        </div>
+
+        <div class="csv-note">
+          <strong>対応列</strong>
+          <code>thai,reading,meaning,category,memo</code>
+        </div>
+
+        <textarea id="csvPreview" class="csv-preview" rows="9" spellcheck="false">thai,reading,meaning,category,memo
+มะม่วง,マムアン,マンゴー,食べ物,黄色い果物
+แมว,メーオ,猫,動物,猫のキャラ画像を後で追加</textarea>
+
+        <button id="pasteImportButton" class="primary-button" type="button">この内容を取り込む</button>
+        <p id="importMessage" class="message" aria-live="polite"></p>
+      </section>
+    </main>
+
+    <script src="app.js" defer></script>
+  </body>
+</html>
+

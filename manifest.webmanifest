@@ -1,0 +1,17 @@
+{
+  "name": "Thai Card Studio",
+  "short_name": "Thai Cards",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f7f3eb",
+  "theme_color": "#f8b84e",
+  "description": "タイ語の単語カードを画像とCSVで管理するPWA",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

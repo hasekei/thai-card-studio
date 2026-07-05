@@ -1,0 +1,519 @@
+﻿:root {
+  color-scheme: light;
+  --bg: #f7f3eb;
+  --ink: #1f2328;
+  --muted: #6d665c;
+  --line: #ded2bf;
+  --panel: #fffaf2;
+  --panel-strong: #ffffff;
+  --accent: #e07b39;
+  --accent-dark: #7b3f1f;
+  --green: #467f5b;
+  --blue: #355e8b;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans Thai", "Noto Sans JP", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f9d582 0, var(--bg) 300px);
+  color: var(--ink);
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+.app-shell {
+  width: min(100%, 760px);
+  margin: 0 auto;
+  padding: max(18px, env(safe-area-inset-top)) 16px max(28px, env(safe-area-inset-bottom));
+}
+
+.topbar,
+.section-head,
+.tabs,
+.tools-grid,
+.answer-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.topbar {
+  padding: 14px 0 18px;
+}
+
+.eyebrow {
+  margin: 0 0 3px;
+  color: var(--accent-dark);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+h1,
+h2 {
+  margin: 0;
+  letter-spacing: 0;
+}
+
+h1 {
+  font-size: 2rem;
+}
+
+h2 {
+  font-size: 1.2rem;
+}
+
+.stats {
+  min-width: 72px;
+  padding: 10px 12px;
+  border: 1px solid rgba(123, 63, 31, 0.25);
+  border-radius: 8px;
+  background: rgba(255, 250, 242, 0.72);
+  text-align: center;
+}
+
+.stats span {
+  display: block;
+  font-size: 1.45rem;
+  font-weight: 800;
+}
+
+.stats small {
+  color: var(--muted);
+}
+
+.tabs {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  padding: 7px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 250, 242, 0.92);
+  backdrop-filter: blur(12px);
+}
+
+.tab {
+  flex: 1;
+  min-height: 42px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.tab.is-active {
+  background: var(--ink);
+  color: white;
+}
+
+.view {
+  display: none;
+  padding-top: 18px;
+}
+
+.view.is-active {
+  display: block;
+}
+
+.section-head {
+  margin-bottom: 12px;
+}
+
+.study-card {
+  min-height: 430px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel-strong);
+  overflow: visible;
+  box-shadow: 0 14px 34px rgba(31, 35, 40, 0.08);
+}
+
+.image-stage {
+  position: relative;
+  display: flex;
+  min-height: 220px;
+  align-items: center;
+  justify-content: center;
+  background: #f3e6d5;
+  padding: 10px;
+}
+
+.image-stage img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.image-placeholder {
+  display: grid;
+  width: 76%;
+  aspect-ratio: 1;
+  place-items: center;
+  border: 2px dashed #d4b98f;
+  border-radius: 8px;
+  color: var(--accent-dark);
+  font-size: 4.2rem;
+  font-weight: 900;
+}
+
+.answer-panel {
+  margin: 12px;
+  padding: 12px 14px;
+  border: 1px solid rgba(222, 210, 191, 0.95);
+  border-radius: 8px;
+  background: rgba(255, 250, 242, 0.96);
+  box-shadow: 0 8px 24px rgba(31, 35, 40, 0.12);
+}
+
+.thai-answer {
+  margin: 0 0 2px;
+  color: var(--ink);
+  font-family: "Noto Sans Thai", "Tahoma", sans-serif;
+  font-size: clamp(2rem, 10vw, 3.6rem);
+  font-weight: 900;
+  line-height: 1.05;
+}
+
+.reading {
+  margin: 0;
+  color: var(--blue);
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+
+.meaning {
+  margin: 4px 0 0;
+  font-size: 1.7rem;
+  font-weight: 900;
+}
+
+.meta {
+  margin: 8px 0 0;
+  color: var(--muted);
+}
+
+.learned-badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  padding: 7px 10px;
+  border: 1px solid rgba(70, 127, 91, 0.3);
+  border-radius: 8px;
+  background: rgba(232, 244, 236, 0.94);
+  color: #285f3d;
+  font-weight: 900;
+}
+
+.learned-dot {
+  display: inline-grid;
+  width: 24px;
+  height: 24px;
+  margin-right: 7px;
+  place-items: center;
+  border-radius: 999px;
+  background: #467f5b;
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 0.88rem;
+  vertical-align: 3px;
+}
+
+.answer-actions {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  margin-top: 14px;
+}
+
+.primary-button,
+.secondary-button,
+.icon-button {
+  min-height: 46px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-weight: 800;
+}
+
+.primary-button {
+  width: 100%;
+  background: var(--accent);
+  color: white;
+}
+
+.answer-actions .secondary-button {
+  width: 100%;
+}
+
+.secondary-button.is-learned {
+  border-color: rgba(70, 127, 91, 0.42);
+  background: #e8f4ec;
+  color: #285f3d;
+}
+
+.secondary-button,
+.icon-button {
+  background: var(--panel);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+.icon-button {
+  width: 46px;
+  font-size: 1.2rem;
+}
+
+.form-card,
+.csv-note,
+.card-item {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+}
+
+.form-card {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 14px;
+}
+
+label {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+input,
+textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+  color: var(--ink);
+  padding: 12px;
+}
+
+.card-list {
+  display: grid;
+  gap: 10px;
+}
+
+.card-item {
+  display: grid;
+  grid-template-columns: 74px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 10px;
+}
+
+.thumb {
+  display: grid;
+  width: 74px;
+  height: 74px;
+  place-items: center;
+  border-radius: 8px;
+  background: #f2ddbd;
+  color: var(--accent-dark);
+  font-family: "Noto Sans Thai", "Tahoma", sans-serif;
+  font-size: 1.8rem;
+  font-weight: 900;
+  overflow: hidden;
+}
+
+.thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-item h3 {
+  margin: 0;
+  font-family: "Noto Sans Thai", "Tahoma", sans-serif;
+  font-size: 1.45rem;
+}
+
+.card-item p {
+  margin: 2px 0 0;
+  color: var(--muted);
+}
+
+.card-actions {
+  display: grid;
+  gap: 8px;
+  justify-items: end;
+}
+
+.image-button,
+.delete-button {
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 8px;
+  font-weight: 900;
+}
+
+.image-button {
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  background: white;
+  color: var(--blue);
+  cursor: pointer;
+  font-size: 0.78rem;
+  padding: 0 10px;
+}
+
+.image-button input {
+  display: none;
+}
+
+.delete-button {
+  border: 0;
+  background: #f3d1c6;
+  color: #8d2c1d;
+}
+
+.tools-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-bottom: 12px;
+}
+
+.file-drop {
+  min-height: 46px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--ink);
+  place-items: center;
+}
+
+.file-drop input {
+  display: none;
+}
+
+.csv-note {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 12px;
+}
+
+.csv-note code {
+  width: 100%;
+  overflow-wrap: anywhere;
+  color: var(--green);
+}
+
+.csv-preview {
+  min-height: 190px;
+  margin-bottom: 12px;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.9rem;
+}
+
+.message,
+.empty-state {
+  color: var(--muted);
+}
+
+.message {
+  min-height: 44px;
+  margin: 12px 0 0;
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.message:empty {
+  display: none;
+}
+
+.message.is-success {
+  border: 1px solid rgba(70, 127, 91, 0.28);
+  background: #e8f4ec;
+  color: #285f3d;
+  font-weight: 800;
+}
+
+.message.is-error {
+  border: 1px solid rgba(141, 44, 29, 0.25);
+  background: #f8e3dc;
+  color: #8d2c1d;
+  font-weight: 800;
+}
+
+.empty-state {
+  display: grid;
+  min-height: 430px;
+  place-content: center;
+  gap: 8px;
+  padding: 24px;
+  text-align: center;
+}
+
+.hidden-answer .answer-panel {
+  display: none;
+}
+
+@media (max-width: 520px) {
+  h1 {
+    font-size: 1.7rem;
+  }
+
+  .study-card {
+    min-height: 390px;
+  }
+
+  .image-stage {
+    min-height: 200px;
+  }
+
+  .answer-panel {
+    margin: 10px;
+    padding: 10px 12px;
+  }
+
+  .tools-grid,
+  .answer-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .card-item {
+    grid-template-columns: 60px 1fr;
+  }
+
+  .card-actions {
+    grid-column: 1 / -1;
+    grid-template-columns: 1fr 44px;
+    justify-items: stretch;
+  }
+
+  .thumb {
+    width: 60px;
+    height: 60px;
+    font-size: 1.45rem;
+  }
+}
+
+
+
+
+
+
+
+
