@@ -25,6 +25,7 @@
         <button class="tab is-active" data-view="studyView" type="button">復習</button>
         <button class="tab" data-view="cardsView" type="button">カード</button>
         <button class="tab" data-view="importView" type="button">CSV</button>
+        <button class="tab" data-view="syncView" type="button">同期</button>
       </nav>
 
       <section id="studyView" class="view is-active" aria-labelledby="studyTitle">
@@ -118,9 +119,34 @@
         <button id="pasteImportButton" class="primary-button" type="button">この内容を取り込む</button>
         <p id="importMessage" class="message" aria-live="polite"></p>
       </section>
+
+      <section id="syncView" class="view" aria-labelledby="syncTitle">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Cloud Sync</p>
+            <h2 id="syncTitle">Firebase同期</h2>
+          </div>
+        </div>
+
+        <div class="sync-panel">
+          <div class="sync-status" id="syncStatus">未設定</div>
+          <label>
+            <span>Firebase config</span>
+            <textarea id="firebaseConfigInput" rows="8" spellcheck="false" placeholder="const firebaseConfig = { ... };"></textarea>
+          </label>
+          <div class="sync-actions">
+            <button id="saveFirebaseConfigButton" class="secondary-button" type="button">設定を保存</button>
+            <button id="signInButton" class="primary-button" type="button">Googleでログイン</button>
+            <button id="syncNowButton" class="secondary-button" type="button">今すぐ同期</button>
+            <button id="signOutButton" class="secondary-button" type="button">ログアウト</button>
+          </div>
+          <p class="sync-help">同じFirebase設定と同じGoogleアカウントでログインすると、iPhoneとPCでカードを共有できます。</p>
+        </div>
+      </section>
     </main>
 
     <script src="app.js" defer></script>
   </body>
 </html>
+
 

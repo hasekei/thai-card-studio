@@ -1,4 +1,5 @@
 ﻿const storageKey = "thai-card-studio-v1";
+const firebaseConfigKey = "thai-card-studio-firebase-config";
 
 const sampleCards = [
   {
@@ -19,6 +20,15 @@ const sampleCards = [
 let cards = loadCards();
 let activeIndex = 0;
 let answerVisible = false;
+let firebaseState = {
+  app: null,
+  auth: null,
+  db: null,
+  user: null,
+  modules: null,
+  syncing: false,
+  config: loadFirebaseConfig(),
+};
 
 const elements = {
   tabs: document.querySelectorAll(".tab"),
@@ -43,6 +53,12 @@ const elements = {
   sampleButton: document.querySelector("#sampleButton"),
   exportButton: document.querySelector("#exportButton"),
   importMessage: document.querySelector("#importMessage"),
+  firebaseConfigInput: document.querySelector("#firebaseConfigInput"),
+  saveFirebaseConfigButton: document.querySelector("#saveFirebaseConfigButton"),
+  signInButton: document.querySelector("#signInButton"),
+  syncNowButton: document.querySelector("#syncNowButton"),
+  signOutButton: document.querySelector("#signOutButton"),
+  syncStatus: document.querySelector("#syncStatus"),
 };
 
 elements.tabs.forEach((tab) => {
@@ -158,6 +174,21 @@ elements.exportButton.addEventListener("click", () => {
   downloadText("thai-cards-export.csv", toCsv(cards));
 });
 
+elements.firebaseConfigInput.value = firebaseState.config ? JSON.stringify(firebaseState.config, null, 2) : "";
+elements.saveFirebaseConfigButton.addEventListener("click", () => {
+  const config = parseFirebaseConfig(elements.firebaseConfigInput.value);
+  if (!config) {
+    setSyncStatus("Firebase config を読み取れませんでした。", "error");
+    return;
+  }
+  firebaseState.config = config;
+  localStorage.setItem(firebaseConfigKey, JSON.stringify(config));
+  setSyncStatus("Firebase設定を保存しました。ログインできます。", "success");
+});
+elements.signInButton.addEventListener("click", signInToFirebase);
+elements.signOutButton.addEventListener("click", signOutFromFirebase);
+elements.syncNowButton.addEventListener("click", syncWithFirebase);
+
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", async () => {
     try {
@@ -221,6 +252,7 @@ function normalizeCards(items) {
 function saveCards() {
   try {
     localStorage.setItem(storageKey, JSON.stringify(cards));
+    queueFirebaseSync();
     return true;
   } catch (error) {
     alert("画像データが大きすぎて保存できませんでした。別の画像を選ぶか、画像サイズを小さくしてください。");
@@ -346,7 +378,7 @@ function resizeImageFile(file) {
       const image = new Image();
       image.onerror = () => reject(new Error("画像を読み込めませんでした"));
       image.onload = () => {
-        const maxSide = 1400;
+        const maxSide = 900;
         const scale = Math.min(1, maxSide / Math.max(image.naturalWidth, image.naturalHeight));
         const width = Math.max(1, Math.round(image.naturalWidth * scale));
         const height = Math.max(1, Math.round(image.naturalHeight * scale));
@@ -355,7 +387,7 @@ function resizeImageFile(file) {
         canvas.height = height;
         const context = canvas.getContext("2d");
         context.drawImage(image, 0, 0, width, height);
-        resolve(canvas.toDataURL("image/jpeg", 0.84));
+        resolve(canvas.toDataURL("image/jpeg", 0.76));
       };
       image.src = reader.result;
     };
@@ -448,4 +480,185 @@ function escapeHtml(value) {
 
 
 
+
+
+
+function loadFirebaseConfig() {
+  const stored = localStorage.getItem(firebaseConfigKey);
+  if (!stored) return null;
+  try {
+    return JSON.parse(stored);
+  } catch {
+    return null;
+  }
+}
+
+function parseFirebaseConfig(value) {
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+  try {
+    return JSON.parse(trimmed);
+  } catch {}
+  const match = trimmed.match(/firebaseConfig\s*=\s*(\{[\s\S]*?\});?\s*$/);
+  if (!match) return null;
+  try {
+    return Function(`"use strict"; return (${match[1]});`)();
+  } catch {
+    return null;
+  }
+}
+
+async function loadFirebaseModules() {
+  if (firebaseState.modules) return firebaseState.modules;
+  const app = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js");
+  const auth = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js");
+  const firestore = await import("https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js");
+  firebaseState.modules = { app, auth, firestore };
+  return firebaseState.modules;
+}
+
+async function ensureFirebase() {
+  if (!firebaseState.config) {
+    setSyncStatus("Firebase設定を保存してください。", "error");
+    return false;
+  }
+  if (firebaseState.app && firebaseState.auth && firebaseState.db) return true;
+  const modules = await loadFirebaseModules();
+  firebaseState.app = modules.app.initializeApp(firebaseState.config);
+  firebaseState.auth = modules.auth.getAuth(firebaseState.app);
+  firebaseState.db = modules.firestore.getFirestore(firebaseState.app);
+  modules.auth.onAuthStateChanged(firebaseState.auth, (user) => {
+    firebaseState.user = user;
+    setSyncStatus(user ? `${user.displayName || user.email || "ログイン中"} と同期できます。` : "未ログイン", user ? "success" : "");
+    render();
+  });
+  return true;
+}
+
+async function signInToFirebase() {
+  if (!(await ensureFirebase())) return;
+  const { auth } = firebaseState.modules;
+  const provider = new auth.GoogleAuthProvider();
+  try {
+    if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+      await auth.signInWithRedirect(firebaseState.auth, provider);
+      return;
+    }
+    const result = await auth.signInWithPopup(firebaseState.auth, provider);
+    firebaseState.user = result.user;
+    setSyncStatus("ログインしました。同期しています...", "success");
+    await syncWithFirebase();
+  } catch (error) {
+    if (error.code === "auth/popup-blocked" || error.code === "auth/popup-closed-by-user") {
+      await auth.signInWithRedirect(firebaseState.auth, provider);
+      return;
+    }
+    setSyncStatus(`ログインできませんでした: ${error.message}`, "error");
+  }
+}
+
+async function signOutFromFirebase() {
+  if (!(await ensureFirebase())) return;
+  await firebaseState.modules.auth.signOut(firebaseState.auth);
+  firebaseState.user = null;
+  setSyncStatus("ログアウトしました。", "");
+}
+
+let pendingSyncTimer = null;
+function queueFirebaseSync() {
+  if (!firebaseState.user || !firebaseState.db || firebaseState.syncing) return;
+  clearTimeout(pendingSyncTimer);
+  pendingSyncTimer = setTimeout(() => syncWithFirebase(), 800);
+}
+
+async function syncWithFirebase() {
+  if (!(await ensureFirebase())) return;
+  if (!firebaseState.user) {
+    setSyncStatus("Googleログインしてください。", "error");
+    return;
+  }
+  firebaseState.syncing = true;
+  setSyncStatus("同期中...", "");
+  try {
+    const { firestore } = firebaseState.modules;
+    const collectionRef = firestore.collection(firebaseState.db, "users", firebaseState.user.uid, "cards");
+    const snapshot = await firestore.getDocs(collectionRef);
+    const remoteCards = snapshot.docs.map((doc) => normalizeRemoteCard(doc.id, doc.data()));
+    const merged = mergeCardSets(cards, remoteCards);
+    cards = merged;
+    localStorage.setItem(storageKey, JSON.stringify(cards));
+
+    await Promise.all(
+      cards.map((card) =>
+        firestore.setDoc(firestore.doc(collectionRef, card.id), {
+          thai: card.thai || "",
+          reading: card.reading || "",
+          meaning: card.meaning || "",
+          category: card.category || "",
+          memo: card.memo || "",
+          image: card.image || "",
+          reviewCount: Number(card.reviewCount || 0),
+          learned: Boolean(card.learned),
+          learnedAt: card.learnedAt || "",
+          createdAt: card.createdAt || new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        }),
+      ),
+    );
+    activeIndex = Math.min(activeIndex, Math.max(cards.length - 1, 0));
+    render();
+    setSyncStatus(`${cards.length}件を同期しました。`, "success");
+  } catch (error) {
+    setSyncStatus(`同期できませんでした: ${error.message}`, "error");
+  } finally {
+    firebaseState.syncing = false;
+  }
+}
+
+function normalizeRemoteCard(id, data) {
+  return {
+    id,
+    thai: data.thai || "",
+    reading: data.reading || "",
+    meaning: data.meaning || "",
+    category: data.category || "",
+    memo: data.memo || "",
+    image: data.image || "",
+    reviewCount: Number(data.reviewCount || 0),
+    learned: Boolean(data.learned),
+    learnedAt: data.learnedAt || "",
+    createdAt: data.createdAt || new Date().toISOString(),
+  };
+}
+
+function mergeCardSets(localCards, remoteCards) {
+  const merged = [];
+  [...remoteCards, ...localCards].forEach((card) => {
+    const keyMatch = merged.find((candidate) => candidate.id === card.id || (candidate.thai === card.thai && candidate.meaning === card.meaning));
+    if (!keyMatch) {
+      merged.push({ ...card, id: card.id || newId() });
+      return;
+    }
+    keyMatch.reading = card.reading || keyMatch.reading;
+    keyMatch.category = card.category || keyMatch.category;
+    keyMatch.memo = card.memo || keyMatch.memo;
+    keyMatch.image = card.image || keyMatch.image;
+    keyMatch.reviewCount = Math.max(Number(keyMatch.reviewCount || 0), Number(card.reviewCount || 0));
+    keyMatch.learned = Boolean(keyMatch.learned || card.learned);
+    keyMatch.learnedAt = keyMatch.learnedAt || card.learnedAt || "";
+    keyMatch.createdAt = keyMatch.createdAt || card.createdAt || new Date().toISOString();
+  });
+  return merged;
+}
+
+function setSyncStatus(message, type) {
+  elements.syncStatus.textContent = message;
+  elements.syncStatus.className = `sync-status ${type ? `is-${type}` : ""}`;
+}
+
+if (firebaseState.config) {
+  setSyncStatus("Firebase設定済み。Googleログインできます。", "success");
+} else {
+  setSyncStatus("Firebase設定を貼り付けてください。", "");
+}
 

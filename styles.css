@@ -517,3 +517,51 @@ textarea {
 
 
 
+
+.sync-panel {
+  display: grid;
+  gap: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  padding: 14px;
+}
+
+.sync-status {
+  min-height: 44px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.sync-status.is-success {
+  border-color: rgba(70, 127, 91, 0.28);
+  background: #e8f4ec;
+  color: #285f3d;
+}
+
+.sync-status.is-error {
+  border-color: rgba(141, 44, 29, 0.25);
+  background: #f8e3dc;
+  color: #8d2c1d;
+}
+
+.sync-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.sync-help {
+  margin: 0;
+  color: var(--muted);
+}
+
+@media (max-width: 520px) {
+  .sync-actions {
+    grid-template-columns: 1fr;
+  }
+}
