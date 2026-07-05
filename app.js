@@ -1,4 +1,4 @@
-﻿const storageKey = "thai-card-studio-v1";
+const storageKey = "thai-card-studio-v1";
 const firebaseConfigKey = "thai-card-studio-firebase-config";
 
 const sampleCards = [
@@ -20,6 +20,7 @@ const sampleCards = [
 let cards = loadCards();
 let activeIndex = 0;
 let answerVisible = false;
+let lastSyncedAuthUid = "";
 let firebaseState = {
   app: null,
   auth: null,
@@ -499,7 +500,7 @@ function parseFirebaseConfig(value) {
   try {
     return JSON.parse(trimmed);
   } catch {}
-  const match = trimmed.match(/firebaseConfig\s*=\s*(\{[\s\S]*?\});?\s*$/);
+  const match = trimmed.match(/firebaseConfig\s*=\s*(\{[\s\S]*?\})\s*;/);
   if (!match) return null;
   try {
     return Function(`"use strict"; return (${match[1]});`)();
@@ -531,6 +532,10 @@ async function ensureFirebase() {
     firebaseState.user = user;
     setSyncStatus(user ? `${user.displayName || user.email || "ログイン中"} と同期できます。` : "未ログイン", user ? "success" : "");
     render();
+    if (user && user.uid !== lastSyncedAuthUid) {
+      lastSyncedAuthUid = user.uid;
+      setTimeout(() => syncWithFirebase(), 300);
+    }
   });
   return true;
 }
@@ -553,7 +558,7 @@ async function signInToFirebase() {
       await auth.signInWithRedirect(firebaseState.auth, provider);
       return;
     }
-    setSyncStatus(`ログインできませんでした: ${error.message}`, "error");
+    setSyncStatus(`ログインできませんでした: ${formatFirebaseError(error)}`, "error");
   }
 }
 
@@ -609,7 +614,7 @@ async function syncWithFirebase() {
     render();
     setSyncStatus(`${cards.length}件を同期しました。`, "success");
   } catch (error) {
-    setSyncStatus(`同期できませんでした: ${error.message}`, "error");
+    setSyncStatus(`同期できませんでした: ${formatFirebaseError(error)}`, "error");
   } finally {
     firebaseState.syncing = false;
   }
@@ -649,6 +654,16 @@ function mergeCardSets(localCards, remoteCards) {
     keyMatch.createdAt = keyMatch.createdAt || card.createdAt || new Date().toISOString();
   });
   return merged;
+}
+
+function formatFirebaseError(error) {
+  if (error?.code === "auth/unauthorized-domain") {
+    return "承認済みドメインに hasekei.github.io を追加してください。";
+  }
+  if (error?.code === "permission-denied" || error?.code === "firestore/permission-denied") {
+    return "Firestoreルールでログインユーザーの読み書きを許可してください。";
+  }
+  return error?.message || "原因不明のエラー";
 }
 
 function setSyncStatus(message, type) {
