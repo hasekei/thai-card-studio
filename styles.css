@@ -1,4 +1,4 @@
-﻿:root {
+:root {
   color-scheme: light;
   --bg: #f7f3eb;
   --ink: #1f2328;
@@ -40,6 +40,7 @@ textarea {
 .section-head,
 .tabs,
 .tools-grid,
+.review-nav,
 .answer-actions {
   display: flex;
   align-items: center;
@@ -235,8 +236,13 @@ h2 {
 
 .answer-actions {
   display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr;
+  grid-template-columns: 1.35fr 1fr 1fr 1fr;
   margin-top: 14px;
+}
+
+.review-nav {
+  flex: 0 0 auto;
+  gap: 8px;
 }
 
 .primary-button,

@@ -49,6 +49,8 @@ const elements = {
   studyCard: document.querySelector("#studyCard"),
   revealButton: document.querySelector("#revealButton"),
   knownButton: document.querySelector("#knownButton"),
+  prevButton: document.querySelector("#prevButton"),
+  prevIconButton: document.querySelector("#prevIconButton"),
   nextButton: document.querySelector("#nextButton"),
   shuffleButton: document.querySelector("#shuffleButton"),
   cardForm: document.querySelector("#cardForm"),
@@ -91,6 +93,8 @@ elements.knownButton.addEventListener("click", () => {
   render();
 });
 
+elements.prevButton.addEventListener("click", previousCard);
+elements.prevIconButton.addEventListener("click", previousCard);
 elements.nextButton.addEventListener("click", nextCard);
 elements.shuffleButton.addEventListener("click", nextCard);
 
@@ -281,6 +285,13 @@ function saveCards() {
 function switchView(viewId) {
   elements.tabs.forEach((tab) => tab.classList.toggle("is-active", tab.dataset.view === viewId));
   elements.views.forEach((view) => view.classList.toggle("is-active", view.id === viewId));
+}
+
+function previousCard() {
+  if (!cards.length) return;
+  activeIndex = (activeIndex - 1 + cards.length) % cards.length;
+  answerVisible = false;
+  render();
 }
 
 function nextCard() {

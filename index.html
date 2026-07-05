@@ -34,7 +34,10 @@
             <p class="eyebrow">Review</p>
             <h2 id="studyTitle">画像で思い出す</h2>
           </div>
-          <button id="shuffleButton" class="icon-button" type="button" title="次の単語" aria-label="次の単語">→</button>
+          <div class="review-nav">
+            <button id="prevIconButton" class="icon-button" type="button" title="前の単語" aria-label="前の単語">←</button>
+            <button id="shuffleButton" class="icon-button" type="button" title="次の単語" aria-label="次の単語">→</button>
+          </div>
         </div>
 
         <article id="studyCard" class="study-card" tabindex="0">
@@ -46,6 +49,7 @@
 
         <div class="answer-actions">
           <button id="revealButton" class="primary-button" type="button">答えを見る</button>
+          <button id="prevButton" class="secondary-button" type="button">前の単語</button>
           <button id="nextButton" class="secondary-button" type="button">次の単語</button>
           <button id="knownButton" class="secondary-button" type="button">覚えた</button>
         </div>
@@ -145,7 +149,7 @@
       </section>
     </main>
 
-    <script src="app.js?v=12" defer></script>
+    <script src="app.js?v=13" defer></script>
   </body>
 </html>
 
