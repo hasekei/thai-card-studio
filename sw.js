@@ -1,4 +1,4 @@
-const cacheName = "thai-card-studio-v9";
+const cacheName = "thai-card-studio-v10";
 const assets = ["./", "./index.html", "./styles.css", "./app.js", "./manifest.webmanifest", "./icon.svg"];
 
 self.addEventListener("install", (event) => {

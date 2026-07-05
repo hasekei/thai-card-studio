@@ -1,6 +1,16 @@
 const storageKey = "thai-card-studio-v1";
 const firebaseConfigKey = "thai-card-studio-firebase-config";
 
+const defaultFirebaseConfig = {
+  apiKey: "AIzaSyBY8lqssRhB739ZqXJJG47ZbW37oaVYZPk",
+  authDomain: "thailanguage-b0146.firebaseapp.com",
+  projectId: "thailanguage-b0146",
+  storageBucket: "thailanguage-b0146.firebasestorage.app",
+  messagingSenderId: "742019685815",
+  appId: "1:742019685815:web:ee1199a85a7fb121ac1c32",
+  measurementId: "G-M4K79W5JR7",
+};
+
 const sampleCards = [
   {
     id: newId(),
@@ -29,7 +39,7 @@ let firebaseState = {
   user: null,
   modules: null,
   syncing: false,
-  config: loadFirebaseConfig(),
+  config: loadFirebaseConfig() || defaultFirebaseConfig,
 };
 
 const elements = {
